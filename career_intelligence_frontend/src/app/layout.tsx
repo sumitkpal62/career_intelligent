@@ -1,13 +1,20 @@
-import "@/styles/globals.css";
+import "./globals.css";
+import Navbar from "@/components/Navbar";
+
+export const metadata = {
+  title: "Career Intelligence Platform",
+  description: "Skill gap analysis and learning roadmap",
+};
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body>
+        <Navbar />
         {children}
       </body>
     </html>
