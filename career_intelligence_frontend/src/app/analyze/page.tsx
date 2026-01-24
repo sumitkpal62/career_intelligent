@@ -13,12 +13,52 @@ const SKILLS = [
 
 export default function AnalyzePage() {
   const [skills, setSkills] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const updateSkill = (id: string, value: number) => {
     setSkills((prev) => ({
       ...prev,
       [id]: value,
     }));
+  };
+
+  const handleAnalyze = async () => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    const payload = Object.entries(skills).map(
+      ([skill_id, proficiency]) => ({
+        skill_id,
+        proficiency,
+      })
+    );
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/analyze/skill-gap",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to analyze skills");
+      }
+
+      const data = await response.json();
+      setResult(data);
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,7 +72,7 @@ export default function AnalyzePage() {
         This helps us calculate your readiness and learning roadmap.
       </p>
 
-      {/* Skill Input Section */}
+      {/* Skill Input */}
       <div className="space-y-6">
         {SKILLS.map((skill) => (
           <div
@@ -73,35 +113,94 @@ export default function AnalyzePage() {
       {/* Analyze Button */}
       <div className="mt-10">
         <button
+          type="button"
+          onClick={handleAnalyze}
+          disabled={loading}
           className="
             px-6 py-3 rounded-md font-medium
             bg-black text-white
             dark:bg-white dark:text-black
             hover:opacity-90
             transition
+            disabled:opacity-50
           "
         >
-          Analyze
+          {loading ? "Analyzing..." : "Analyze"}
         </button>
       </div>
 
-      {/* Results Placeholder */}
-      <div className="mt-16">
-        <h3 className="text-2xl font-semibold mb-4">
-          Analysis Result
-        </h3>
-
-        <div
-          className="
-            p-6 rounded-md
-            border border-dashed
-            border-gray-300 dark:border-gray-600
-            text-gray-500 dark:text-gray-400
-          "
-        >
-          Results will appear here after analysis.
+      {/* Error */}
+      {error && (
+        <div className="mt-6 text-red-500">
+          {error}
         </div>
-      </div>
+      )}
+
+      {/* Results */}
+      {result && (
+        <div className="mt-16 space-y-6
+                        opacity-0 translate-y-4
+                        animate-fade-in">
+          <h3 className="text-2xl font-semibold">
+            Analysis Result
+          </h3>
+
+          <div
+            className="
+              p-6 rounded-md
+              border border-gray-200 dark:border-gray-700
+              bg-white dark:bg-gray-800
+            "
+          >
+            <p className="mb-2">
+              <strong>Readiness:</strong>{" "}
+              {result.analysis.readiness_percentage}% (
+              {result.analysis.readiness_level})
+            </p>
+
+            <p className="mb-2">
+              <strong>Missing Skills:</strong>{" "}
+              {result.analysis.missing_skills.join(", ") || "None"}
+            </p>
+
+            <p className="mb-2">
+              <strong>Weak Skills:</strong>{" "}
+              {result.analysis.weak_skills.join(", ") || "None"}
+            </p>
+
+            <p>
+              <strong>Strong Skills:</strong>{" "}
+              {result.analysis.strong_skills.join(", ") || "None"}
+            </p>
+          </div>
+
+          <div
+            className="
+              p-6 rounded-md
+              border border-gray-200 dark:border-gray-700
+              bg-white dark:bg-gray-800
+            "
+          >
+            <h4 className="font-semibold mb-4">
+              Learning Roadmap
+            </h4>
+
+            {Object.entries(result.roadmap).map(
+              ([phase, details]: any) => (
+                <div key={phase} className="mb-4">
+                  <p className="font-medium">
+                    {details.title} (
+                    {details.estimated_weeks} weeks)
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {details.skills.join(", ") || "—"}
+                  </p>
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }
