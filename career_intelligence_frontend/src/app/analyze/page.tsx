@@ -53,7 +53,15 @@ export default function AnalyzePage() {
       }
 
       const data = await response.json();
+
+      // store roadmap for next page
+      sessionStorage.setItem(
+        "roadmap",
+        JSON.stringify(data.roadmap)
+      );
+
       setResult(data);
+
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
@@ -138,12 +146,30 @@ export default function AnalyzePage() {
 
       {/* Results */}
       {result && (
-        <div className="mt-16 space-y-6
-                        opacity-0 translate-y-4
-                        animate-fade-in">
-          <h3 className="text-2xl font-semibold">
-            Analysis Result
-          </h3>
+        <div className="
+              mt-16 space-y-6
+              opacity-0 translate-y-4
+              animate-fade-in">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-semibold">
+              Analysis Result
+            </h3>
+
+            <a
+              href="/roadmap"
+              onClick={() => {
+                if (result?.roadmap) {
+                  sessionStorage.setItem(
+                    "roadmap",
+                    JSON.stringify(result.roadmap)
+                  );
+                }
+              }}
+            >
+              View Roadmap →
+            </a>
+
+          </div>
 
           <div
             className="
