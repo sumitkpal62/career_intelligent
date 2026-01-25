@@ -64,14 +64,19 @@ export default function RoadmapPage() {
               totalSkills === 0
                 ? 100
                 : Math.round((completedSkills / totalSkills) * 100);
+            const isCompleted = progress === 100;
             return (
               <div
                 key={phaseKey}
-                className="
-                p-6 rounded-md
-                border border-gray-200 dark:border-gray-700
-                bg-white dark:bg-gray-800
-              "
+                className={`
+                  p-6 rounded-md border
+                  transition-colors duration-300
+                  ${
+                    isCompleted
+                      ? "border-green-500 bg-green-50 dark:bg-green-900/20"
+                      : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+                  }
+                `}
               >
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-xl font-semibold">
@@ -94,15 +99,18 @@ export default function RoadmapPage() {
                           type="checkbox"
                           checked={!!completed[skill]}
                           onChange={() => toggleSkill(skill)}
-                          className="h-4 w-4"
+                          className="
+                            h-4 w-4
+                            transition-transform duration-150
+                            checked:scale-110
+                          "
                         />
 
                         <span
-                          className={
-                            completed[skill]
-                              ? "line-through text-gray-400"
-                              : ""
-                          }
+                          className={`
+                            transition-colors duration-200 ease-out
+                            ${completed[skill] ? "line-through text-gray-400 scale-95 opacity-70" : "scale-100 opacity-100"}
+                          `}
                         >
                           {skill}
                         </span>
@@ -123,7 +131,7 @@ export default function RoadmapPage() {
 
                   <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded">
                     <div
-                      className="h-2 rounded bg-black dark:bg-white transition-all"
+                      className="h-2 rounded bg-black dark:bg-white transition-[width] duration-300 ease-out"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
