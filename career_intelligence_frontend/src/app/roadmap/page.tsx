@@ -38,7 +38,8 @@ export default function RoadmapPage() {
           No roadmap found
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Please analyze your skills first to generate a roadmap.
+          Start by analyzing your skills to generate a personalized
+          learning roadmap tailored to your current level.
         </p>
       </main>
     );
@@ -50,8 +51,10 @@ export default function RoadmapPage() {
         Your Learning Roadmap
       </h2>
 
-      <p className="text-gray-600 dark:text-gray-400 mb-12">
-        This roadmap is generated based on your current skill analysis.
+      <p className="text-gray-600 dark:text-gray-400 mb-12 max-w-3xl">
+        This roadmap breaks your journey into clear phases.
+        Focus on completing one phase at a time to steadily move
+        toward Data Engineer readiness.
       </p>
 
       <div className="space-y-8">

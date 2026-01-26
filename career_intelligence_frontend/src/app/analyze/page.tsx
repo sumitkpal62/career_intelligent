@@ -71,9 +71,15 @@ export default function AnalyzePage() {
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-12">
-      <h2 className="text-3xl font-bold mb-6">
-        Analyze Your Skills
+      <h2 className="text-3xl font-bold mb-2">
+        Skill Readiness Analysis
       </h2>
+
+      <p className="text-gray-600 dark:text-gray-400 mb-8">
+        Tell us your current skill level. We’ll evaluate your readiness
+        for a Data Engineer role and generate a personalized roadmap.
+      </p>
+
 
       <p className="text-gray-600 dark:text-gray-400 mb-10">
         Select your current proficiency for each skill.
@@ -133,7 +139,7 @@ export default function AnalyzePage() {
             disabled:opacity-50
           "
         >
-          {loading ? "Analyzing..." : "Analyze"}
+          {loading ? "Analyzing your profile..." : "Analyze My Readiness"}
         </button>
       </div>
 
@@ -178,26 +184,30 @@ export default function AnalyzePage() {
               bg-white dark:bg-gray-800
             "
           >
-            <p className="mb-2">
-              <strong>Readiness:</strong>{" "}
+            <div className="mb-2">
+              <strong>Overall Readiness:</strong>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                This score reflects how close you are to being job-ready
+                for a Data Engineer role.
+              </p>
               {result.analysis.readiness_percentage}% (
               {result.analysis.readiness_level})
-            </p>
+            </div>
 
-            <p className="mb-2">
+            <div className="mb-2">
               <strong>Missing Skills:</strong>{" "}
               {result.analysis.missing_skills.join(", ") || "None"}
-            </p>
+            </div>
 
-            <p className="mb-2">
+            <div className="mb-2">
               <strong>Weak Skills:</strong>{" "}
               {result.analysis.weak_skills.join(", ") || "None"}
-            </p>
+            </div>
 
-            <p>
+            <div>
               <strong>Strong Skills:</strong>{" "}
               {result.analysis.strong_skills.join(", ") || "None"}
-            </p>
+            </div>
           </div>
 
           <div
