@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const SKILLS = [
   { id: "skill-001", name: "Python" },
   { id: "skill-002", name: "SQL" },
@@ -38,7 +40,7 @@ export default function AnalyzePage() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/analyze/skill-gap",
+        `${API_BASE_URL}/analyze/skill-gap`,
         {
           method: "POST",
           headers: {
