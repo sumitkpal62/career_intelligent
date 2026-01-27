@@ -8,28 +8,43 @@ export default function RoadmapPage() {
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("roadmap");
-    const storedCompleted = sessionStorage.getItem("completedSkills");
-    if (stored) {
-      setRoadmap(JSON.parse(stored));
+    const loadProgress = async () => {
+      const res = await fetch(
+        "http://127.0.0.1:8000/progress/demo-user"
+      );
+      const data = await res.json();
+      setCompleted(data.completed_skills || {});
+    };
+
+    const storedRoadmap = sessionStorage.getItem("roadmap");
+    if (storedRoadmap) {
+      setRoadmap(JSON.parse(storedRoadmap));
     }
-    if (storedCompleted) {
-      setCompleted(JSON.parse(storedCompleted));
-    }
+
+    loadProgress();
   }, []);
 
-  const toggleSkill = (skill: string) => {
+
+  const toggleSkill = async (skill: string) => {
     const updated = {
       ...completed,
       [skill]: !completed[skill],
     };
 
     setCompleted(updated);
-    sessionStorage.setItem(
-      "completedSkills",
-      JSON.stringify(updated)
-    );
+
+    await fetch("http://127.0.0.1:8000/progress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: "demo-user",
+        completed_skills: updated,
+      }),
+    });
   };
+
 
   if (!roadmap) {
     return (
