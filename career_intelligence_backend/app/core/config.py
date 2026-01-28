@@ -3,6 +3,7 @@ from typing import List
 
 
 class Settings(BaseSettings):
+    DATABASE_URL: str
     ALLOWED_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
