@@ -22,9 +22,15 @@ class User(Base):
         nullable=False,
     )
 
-    hashed_password: Mapped[datetime] = mapped_column(
+    hashed_password: Mapped[str] = mapped_column(
+        String,
+        nullable=False,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow
+        # For now we are using utcnow, it can be changed later datetime.now(timezone.utc)
+        default=datetime.utcnow, 
     )
 
 
