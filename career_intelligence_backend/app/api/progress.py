@@ -7,6 +7,7 @@ from fastapi import Depends
 from app.db.database import get_db
 from app.db.models import UserProgress
 from app.schemas.progress import ProgressPayload
+from app.core.auth import get_current_user_id
 
 
 router = APIRouter(prefix="/progress", tags=["Progress"])
@@ -15,9 +16,9 @@ router = APIRouter(prefix="/progress", tags=["Progress"])
 USER_PROGRESS = {}
 
 
-@router.get("/{user_id}")
+@router.get("")
 async def get_progress(
-    user_id: str,
+    user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
     ):
     result = await db.execute(
@@ -27,12 +28,10 @@ async def get_progress(
 
     if not progress:
         return {
-            "user_id": user_id,
             "completed_skills": {},
         }
 
     return {
-        "user_id": progress.user_id,
         "completed_skills": progress.completed_skills,
     }
 
@@ -40,11 +39,12 @@ async def get_progress(
 @router.post("")
 async def save_progress(
     payload: ProgressPayload,
+    user_id:str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(
         select(UserProgress).where(
-            UserProgress.user_id == payload.user_id
+            UserProgress.user_id == user_id
         )
     )
     progress = result.scalar_one_or_none()
@@ -53,7 +53,7 @@ async def save_progress(
         progress.completed_skills = payload.completed_skills
     else:
         progress = UserProgress(
-            user_id=payload.user_id,
+            user_id=user_id,
             completed_skills=payload.completed_skills,
         )
         db.add(progress)
