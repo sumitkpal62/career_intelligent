@@ -2,15 +2,26 @@
 
 import { useEffect, useState } from "react";
 import RoadmapPhaseCard from "@/components/roadmap/RoadmapPhaseCard";
+import { authFetch } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function RoadmapPage() {
   const [roadmap, setRoadmap] = useState<any>(null);
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
+  const {token} = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if(!token) {
+      router.push("/login")
+    }
+  }, [token])
 
   useEffect(() => {
     const loadProgress = async () => {
-      const res = await fetch(
-        "http://127.0.0.1:8000/progress/demo-user"
+      const res = await authFetch(
+        "http://127.0.0.1:8000/progress"
       );
       const data = await res.json();
       setCompleted(data.completed_skills || {});
@@ -33,7 +44,7 @@ export default function RoadmapPage() {
 
     setCompleted(updated);
 
-    await fetch("http://127.0.0.1:8000/progress", {
+    await authFetch("http://127.0.0.1:8000/progress", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

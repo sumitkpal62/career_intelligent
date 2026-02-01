@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {
   title: "Career Intelligence Platform",
@@ -21,8 +22,10 @@ export default function RootLayout({
           transition-colors duration-200
         "
       >
-        <Navbar />
-        {children}
+        <AuthProvider>
+            <Navbar />
+            {children}
+        </AuthProvider>
       </body>
     </html>
   );
