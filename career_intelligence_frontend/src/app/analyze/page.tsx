@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -18,6 +20,15 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const {token} = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if(!token) {
+      router.push("/login");
+      return;
+    }
+  }, [token])
 
   const updateSkill = (id: string, value: number) => {
     setSkills((prev) => ({
