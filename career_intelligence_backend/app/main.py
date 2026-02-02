@@ -8,6 +8,14 @@ from app.api.progress import router as progress_router
 from app.api.auth import router as auth_router
 from app.core.config import settings
 
+from app.db.database import engine
+from app.db.models import Base
+
+@app.on_event("startup")
+async def on_startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
 app = FastAPI(title="Career Intelligence API")
 
 app.add_middleware(
