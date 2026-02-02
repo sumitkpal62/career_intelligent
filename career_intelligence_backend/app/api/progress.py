@@ -1,13 +1,13 @@
-from fastapi import APIRouter
-from app.schemas.progress import ProgressPayload
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from fastapi import Depends
-
-from app.db.database import get_db
-from app.db.models import UserProgress
+from fastapi import APIRouter, Depends
 from app.schemas.progress import ProgressPayload
 from app.core.auth import get_current_user_id
+from app.db.database import get_db
+from app.db.models import UserProgress
+
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+
+
 
 
 router = APIRouter(prefix="/progress", tags=["Progress"])
