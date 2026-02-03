@@ -5,6 +5,7 @@ import RoadmapPhaseCard from "@/components/roadmap/RoadmapPhaseCard";
 import { authFetch } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import {API_BASE_URL} from "@/lib/config";
 
 export default function RoadmapPage() {
   const [roadmap, setRoadmap] = useState<any>(null);
@@ -21,7 +22,7 @@ export default function RoadmapPage() {
   useEffect(() => {
     const loadProgress = async () => {
       const res = await authFetch(
-        "http://127.0.0.1:8000/progress"
+        `${API_BASE_URL}/progress`
       );
       const data = await res.json();
       setCompleted(data.completed_skills || {});
@@ -44,7 +45,7 @@ export default function RoadmapPage() {
 
     setCompleted(updated);
 
-    await authFetch("http://127.0.0.1:8000/progress", {
+    await authFetch(`${API_BASE_URL}/progress`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
