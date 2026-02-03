@@ -41,24 +41,24 @@ export default function Navbar() {
                            hover:text-black dark:hover:text-white">
             Roadmap
           </span>
-          <div>
-            {
-              !token ? (
-                <Link
-                  href={"/login"}
-                  className="text-sm font-medium hover:underline"
-                >
+          <div className="cursor-pointer text-sm">
+            {!token ? (
+              <div className="space-x-4">
+                <Link href="/login" className="hover:underline text-gray-600 dark:text-gray-300
+                           hover:text-black dark:hover:text-white">
                   Login
                 </Link>
-              ) : (
-                <button
-                  onClick={handleLogout}
-                  className="text-sm font-medium hover:underline"
-                >
-                  Logout
-                </button>
-              )
-            }
+                <Link href="/signup" className="hover:underline text-gray-600 dark:text-gray-300
+                           hover:text-black dark:hover:text-white">
+                  Signup
+                </Link>
+              </div>
+            ) : (
+              <button onClick={handleLogout} className="hover:underline text-gray-600 dark:text-gray-300
+                           hover:text-black dark:hover:text-white">
+                Logout
+              </button>
+            )}
           </div>
 
           <ThemeToggleButton />
