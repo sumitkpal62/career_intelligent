@@ -1,18 +1,28 @@
 "use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext"
 import { API_BASE_URL } from "@/lib/config";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+
+    const emailRef = useRef<HTMLInputElement>(null);
+
     const { login } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const signupSuccess = searchParams.get("signup") === "success";
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+        setLoading(true);
 
         const res = await fetch(`${API_BASE_URL}/auth/login`, {
             method: "POST",
@@ -23,7 +33,11 @@ export default function LoginPage() {
         });
 
         if (!res.ok) {
-            alert("Invalid credentials");
+            setError("Invalid email or password");
+            setPassword("");
+            setEmail("")
+            setLoading(false);
+            emailRef.current?.focus();
             return;
         }
 
@@ -36,6 +50,18 @@ export default function LoginPage() {
         <main className="max-w-md mx-auto mt-20">
             <h2 className="text-2xl font-bold mb-6">Login</h2>
 
+            {signupSuccess && (
+                <div className="mb-4 rounded border border-green-300 bg-green-50 p-3 text-sm text-green-700">
+                    Account created successfully. Please login.
+                </div>
+            )}
+
+            {error && (
+                <div className="mb-4 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+                    {error}
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                     type="email"
@@ -43,6 +69,7 @@ export default function LoginPage() {
                     className="w-full border p-2 text-gray-600 dark:text-gray-200 rounded-md"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    ref={emailRef}
                 />
 
                 <input
