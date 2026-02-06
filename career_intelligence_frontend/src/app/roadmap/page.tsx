@@ -10,14 +10,14 @@ import {API_BASE_URL} from "@/lib/config";
 export default function RoadmapPage() {
   const [roadmap, setRoadmap] = useState<any>(null);
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
-  const {token} = useAuth();
+  const {token, hydrated} = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if(!token) {
+    if(!token && hydrated) {
       router.push("/login")
     }
-  }, [token])
+  }, [token, hydrated])
 
   useEffect(() => {
     const loadProgress = async () => {

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
-  const { token, logout } = useAuth();
+  const { token, logout, hydrated } = useAuth();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -24,25 +24,25 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center space-x-4">
-          <span className="cursor-pointer text-sm
+          <Link href={"/"} className="cursor-pointer text-sm
                            text-gray-600 dark:text-gray-300
                            hover:text-black dark:hover:text-white">
             Home
-          </span>
+          </Link>
 
-          <span className="cursor-pointer text-sm
+          <Link href={"/analyze"} className="cursor-pointer text-sm
                            text-gray-600 dark:text-gray-300
                            hover:text-black dark:hover:text-white">
             Analyze
-          </span>
+          </Link>
 
-          <span className="cursor-pointer text-sm
+          <Link href={"/roadmap"} className="cursor-pointer text-sm
                            text-gray-600 dark:text-gray-300
                            hover:text-black dark:hover:text-white">
             Roadmap
-          </span>
+          </Link>
           <div className="cursor-pointer text-sm">
-            {!token ? (
+            {!token && hydrated ? (
               <div className="space-x-4">
                 <Link href="/login" className="hover:underline text-gray-600 dark:text-gray-300
                            hover:text-black dark:hover:text-white">

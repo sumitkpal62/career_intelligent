@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.roles import router as roles_router
@@ -11,14 +12,15 @@ from app.core.config import settings
 from app.db.database import engine
 from app.db.models import Base
 
-
-
-app = FastAPI(title="Career Intelligence API")
-
-@app.on_event("startup")
-async def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: create table
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    yield
+
+
+app = FastAPI(title="Career Intelligence API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

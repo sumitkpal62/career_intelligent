@@ -60,3 +60,19 @@ async def save_progress(
 
     await db.commit()
     return {"status": "saved"}
+
+@router.post("/reset")
+async def reset_progress(
+    user_id: str = Depends(get_current_user_id),
+    db : AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(UserProgress).where(UserProgress.user_id == user_id)
+    )
+    progress = result.scalar_one_or_none()
+
+    if progress:
+        await db.delete(progress)
+        await db.commit()
+
+    return {"status": "progress reset"}

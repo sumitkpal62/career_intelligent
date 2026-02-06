@@ -1,21 +1,25 @@
 "use client"
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
     token: string | null;
     login: (token: string) => void;
     logout: () => void;
+    hydrated: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [token, setToken] = useState<string | null>(
-        typeof window !== "undefined"
-            ? localStorage.getItem("token")
-            : null
-    )
+    const [token, setToken] = useState<string | null>(null);
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(()=>{
+        const store = localStorage.getItem("token");
+        setToken(store);
+        setHydrated(true);
+    },[])
 
     const login = (newToken: string) => {
         localStorage.setItem("token", newToken);
@@ -28,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ token, login, logout }}>
+        <AuthContext.Provider value={{ token, login, logout , hydrated}}>
             {children}
         </AuthContext.Provider>
     )
