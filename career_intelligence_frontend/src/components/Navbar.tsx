@@ -14,6 +14,10 @@ export default function Navbar() {
     router.push("/login")
   }
 
+  if (!hydrated) {
+    return null;
+  }
+
   return (
     <nav className="w-full border-b border-gray-200 dark:border-gray-700
                     bg-white dark:bg-gray-900">
@@ -24,41 +28,40 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center space-x-4">
-          <Link href={"/"} className="cursor-pointer text-sm
-                           text-gray-600 dark:text-gray-300
-                           hover:text-black dark:hover:text-white">
-            Home
-          </Link>
-
-          <Link href={"/analyze"} className="cursor-pointer text-sm
-                           text-gray-600 dark:text-gray-300
-                           hover:text-black dark:hover:text-white">
-            Analyze
-          </Link>
-
-          <Link href={"/roadmap"} className="cursor-pointer text-sm
-                           text-gray-600 dark:text-gray-300
-                           hover:text-black dark:hover:text-white">
-            Roadmap
-          </Link>
           <div className="cursor-pointer text-sm">
-            {!token && hydrated ? (
-              <div className="space-x-4">
-                <Link href="/login" className="hover:underline text-gray-600 dark:text-gray-300
-                           hover:text-black dark:hover:text-white">
+            {token ? (
+              <div className="flex items-center gap-6">
+                <Link href="/dashboard" className="hover:underline">
+                  Dashboard
+                </Link>
+
+                <Link href="/analyze" className="hover:underline">
+                  Analyze
+                </Link>
+
+                <Link href="/roadmap" className="hover:underline">
+                  Roadmap
+                </Link>
+
+                <button
+                  onClick={logout}
+                  className="hover:underline text-gray-600 dark:text-gray-300"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-6">
+                <Link href="/login" className="hover:underline">
                   Login
                 </Link>
-                <Link href="/signup" className="hover:underline text-gray-600 dark:text-gray-300
-                           hover:text-black dark:hover:text-white">
+
+                <Link href="/signup" className="hover:underline">
                   Signup
                 </Link>
               </div>
-            ) : (
-              <button onClick={handleLogout} className="hover:underline text-gray-600 dark:text-gray-300
-                           hover:text-black dark:hover:text-white">
-                Logout
-              </button>
             )}
+
           </div>
 
           <ThemeToggleButton />
